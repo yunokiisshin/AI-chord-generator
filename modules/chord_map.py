@@ -9,100 +9,162 @@ import random
 
 # dictionary container for every possible note for the processed chord; refreshes per chord
 # contains ints that represent MIDI note value
-note_dict = dict([("root", []), ("third", []), ("fifth", []), ("seventh", []), ("extentions", [])])
+note_dict = dict([("root", []), ("third", []), ("fifth", []), ("seventh", []), ("ninth", []), ("extentions", [])])
+
+# Constants for MIDI note range
+LOWEST_NOTE = pitch.Pitch("F#3").midi
+HIGHEST_NOTE = pitch.Pitch("D5").midi
 
 
-'''modify the pitch of the note by entering any given semitone number'''
 def shift(note, semitones):
-    midi_num = note.midi + semitones
-    return Pitch(midi_num)
+    ''' Shifts a note by a given number of semitones. '''
+    return Pitch(note.midi + semitones)
 
-'''fills up the value of dict's specified key'''
-def fill_dict_value(note_dict, key, note, lowest_note, highest_note):
-    note_val = note
-    while note_val.midi >= lowest_note:
+
+def fill_dict_value(note_dict, key, note):
+    ''' Fills up the note_dict with MIDI note values for a given pitch range. '''
+    note_val = pitch.Pitch(note)
+    while note_val.midi >= LOWEST_NOTE:
         note_val.midi -= 12
-    
-    # this way, note_dict will contain the number in order
     note_val.midi += 12
-    while note_val.midi <= highest_note:
+    while note_val.midi <= HIGHEST_NOTE:
         note_dict[key].append(note_val.midi)
         note_val.midi += 12
         
 
 '''fills up the entire note_dict'''
-def prepare_note_dict(root_note, chord_type, lowest_note, highest_note):
+def prepare_note_dict(root_note, chord_type):
     
     root = Pitch(root_note)
 
-    if chord_type == 'M': # major triad
+    if chord_type == '': # major triad
         third = shift(root, 4)
         fifth = shift(root, 7)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
     
     elif chord_type == 'm': # minor triad
         third = shift(root, 3)
         fifth = shift(root, 7)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
     
     elif chord_type == '7': # dominant 7th
         third = shift(root, 4)
         fifth = shift(root, 7)
         seventh = shift(root, 10)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
-        fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+        fill_dict_value(note_dict, "seventh", seventh)
     
     elif chord_type == 'M7': # major 7th
         third = shift(root, 4)
         fifth = shift(root, 7)
         seventh = shift(root, 11)
-        fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
         
     elif chord_type == 'm7': # minor 7th
         third = shift(root, 3)
         fifth = shift(root, 7)
         seventh = shift(root, 10)
-        fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
    
     elif chord_type == 'dim7': # dimished 7th
         third = shift(root, 3)
         fifth = shift(root, 6)
         seventh = shift(root, 9)
-        fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+        
+    elif chord_type == 'M9': # major 9th
+        third = shift(root, 4)
+        fifth = shift(root, 7)
+        seventh = shift(root, 11)
+        ninth = shift(root, 14)
+        fill_dict_value(note_dict, "ninth", ninth)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+        
+    elif chord_type == 'm9': # minor 9th
+        third = shift(root, 3)
+        fifth = shift(root, 7)
+        seventh = shift(root, 10)
+        ninth = shift(root, 14)
+        fill_dict_value(note_dict, "ninth", ninth)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+    
+    elif chord_type == '9': # dominant 9th
+        third = shift(root, 4)
+        fifth = shift(root, 7)
+        seventh = shift(root, 10)
+        ninth = shift(root, 14)
+        fill_dict_value(note_dict, "ninth", ninth)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+        
+    elif chord_type == '7b9': # dominant 7th flat 9th
+        third = shift(root, 4)
+        fifth = shift(root, 7)
+        seventh = shift(root, 10)
+        ninth = shift(root, 13)
+        fill_dict_value(note_dict, "ninth", ninth)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+    
+    elif chord_type == '7#9': # dominant 7th sharp 9th
+        third = shift(root, 4)
+        fifth = shift(root, 7)
+        seventh = shift(root, 10)
+        ninth = shift(root, 15)
+        fill_dict_value(note_dict, "ninth", ninth)
+        fill_dict_value(note_dict, "seventh", seventh)
+        fill_dict_value(note_dict, "root", root)
+        fill_dict_value(note_dict, "third", third)
+        fill_dict_value(note_dict, "fifth", fifth)
+        
+        
     
     if 'sus4' in chord_type: # alter the 3rd in the chord up a step
         third = shift(root, 5)
-        fifth = shift(root, 7)
-        if '7' in chord_type:
-            fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
-    elif 'sus2' in chord_type: # alter the 3rd in the chord down a step
+        note_dict["third"].clear()
+        fill_dict_value(note_dict, "third", third)
+        
+    if 'sus2' in chord_type: # alter the 3rd in the chord down a step
         third = shift(root, 2)
-        fifth = shift(root, 7)
-        if '7' in chord_type:
-            fill_dict_value(note_dict, "seventh", seventh, lowest_note, highest_note)
-        fill_dict_value(note_dict, "root", root, lowest_note, highest_note)
-        fill_dict_value(note_dict, "third", third, lowest_note, highest_note)
-        fill_dict_value(note_dict, "fifth", fifth, lowest_note, highest_note)
-
-  
+        note_dict["third"].clear()
+        fill_dict_value(note_dict, "third", third)
+        
+    if 'b5' in chord_type: # alter the 5th in the chord down a step
+        note_dict["fifth"].clear()
+        fifth = shift(root, 6)
+        fill_dict_value(note_dict, "fifth", fifth)
+    
+    if '#5' in chord_type: # alter the 5th in the chord up a step
+        note_dict["fifth"].clear()
+        fifth = shift(root, 8)
+        fill_dict_value(note_dict, "fifth", fifth)
+        
+        
     
 '''generate the current chord based on the previous input'''
 def generate(root_note, chord_type, mode, previous_notes): # previous notes is list of pitch objects
@@ -118,10 +180,7 @@ def generate(root_note, chord_type, mode, previous_notes): # previous notes is l
         for key in note_dict.keys():
             note_dict[key].clear()
             
-        # variable to set the range of overall voicing
-        lowest_note = pitch.Pitch("F#3").midi
-        highest_note = pitch.Pitch("D5").midi
-        prepare_note_dict(root_note, chord_type, lowest_note, highest_note)  
+        prepare_note_dict(root_note, chord_type)  
         
         # notes have to be a list of Pitch object
         notes = []
@@ -320,10 +379,7 @@ def generate(root_note, chord_type, mode, previous_notes): # previous notes is l
         for key in note_dict.keys():
             note_dict[key].clear()
         
-        # variable to set the range of overall voicing
-        lowest_note = pitch.Pitch("F#3").midi
-        highest_note = pitch.Pitch("D5").midi
-        prepare_note_dict(root_note, chord_type, lowest_note, highest_note)   
+        prepare_note_dict(root_note, chord_type)   
         
         # notes have to be a list of Pitch object
         notes = []
@@ -556,10 +612,6 @@ def generate(root_note, chord_type, mode, previous_notes): # previous notes is l
         for key in note_dict.keys():
             note_dict[key].clear()
         
-        # variable to set the range of overall voicing
-        lowest_note = pitch.Pitch("F#3").midi
-        highest_note = pitch.Pitch("D5").midi
-        prepare_note_dict(root_note, chord_type, lowest_note, highest_note)   
         
         # notes have to be a list of Pitch object
         notes = []
