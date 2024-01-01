@@ -19,7 +19,11 @@ def generate_midi_from_chord(chord_symbols, epoch, mode):
     progression = dict([("bar1", chord_symbols[0]), 
                         ("bar2", chord_symbols[1]), 
                         ("bar3", chord_symbols[2]), 
-                        ("bar4", chord_symbols[3])])
+                        ("bar4", chord_symbols[3]),
+                        ("bar5", chord_symbols[4]), 
+                        ("bar6", chord_symbols[5]), 
+                        ("bar7", chord_symbols[6]), 
+                        ("bar8", chord_symbols[7])])
     previous_notes = []
     
     chord_name = ''
