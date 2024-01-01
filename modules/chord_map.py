@@ -142,6 +142,10 @@ def prepare_note_dict(root_note, chord_type):
         fill_dict_value(note_dict, "third", third)
         fill_dict_value(note_dict, "fifth", fifth)
         
+    else: # throw error
+        error = "Chord type not recognized."
+        raise ValueError(error)
+        
         
     
     if 'sus4' in chord_type: # alter the 3rd in the chord up a step

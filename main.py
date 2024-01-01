@@ -1,41 +1,79 @@
-# main.py: description on code logics and algorithm
-
 import sys
 from modules.generate_midi_from_chord import *
 from modules.chord_map import *
+import openai
+import os
+from dotenv import load_dotenv
 
-'''
-main.pyでは、入力を読み込み、関数generate_midi_from_chord()を呼ぶ部分を担当しています。
-この関数はmodules.generate_midi_from_chordからインポートしているので、仕様はそちらを参照してください。
-'''
 
-'''
-sample command line: python3 main.py "G Bm A Em" 10 1
-Parameters:
-    chord_symbols - input chord progression. 
-    iter          - amount of variations to be generated. Each file will contain 4-bar progression.
-    mode          - output mode. currently only support 3 for three-note generation.
 
-Output: MIDI files of iter versions will be saved in ./output file. 
 
-logics: 
-The program looks at the middle note of the previous chord, and select the closest note 
-to it in the current chord. It then chooses notes at most nine half-steps away from that note,
-creating a relatively close but varying voicings
-'''
+def generate_chord_progression(prompt):
+    try:
+        # Ensure API key is set in your environment variables
+        openai.api_key = os.getenv('OPENAI_API_KEY')
+        if not openai.api_key:
+            raise ValueError("OpenAI API key is not set in environment variables.")
 
-def main(chord_symbols, iter, mode):
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a professional musician and music theorist. Your job is to create a good 8-bar chord progression in C, suited to the genre. Only provide the strings as shown in the examples. Be creative, but not too odd. Take care of musical qualities. Don't always start with C; don't overly use 2-5-1. Do not use the character ø; replace it with b5 notation. DO NOT OUTPUT ANYTHING BUT 8 BARS OF CHORD SYMBOLS."},
+                {"role": "user", "content": "give me a jazz chord progression"},
+                {"role": "assistant", "content": "FM7 | Em7 A7b9 | Dm7 G7 | CM7 | F#m7b5 B7 | Em7 | A9 D7 | G7 | C#dim7"},
+                {"role": "user", "content": "give me a jazz chord progression"},
+                {"role": "assistant", "content": ""},
+                {"role": "user", "content": prompt}
+            ],
+            temperature = 0.6
+        )
+
+        return response.choices[0].message['content']
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
     
     
 
+def format_symbols(chord_symbols_raw):
+    '''
+    given a string of chord progression, format it so I can process it later more smoothly.
+    For example, a given string can look like "Am7 | D7 | GM7 | CM7 | Bm7b5 | E7 | Am7 | Dm7 G7", 
+    where each chunk separated by | | represents a musical bar. 
+    In the above example, bar 4 is CM7, and bar 8 is Dm7 followed by G7. 
+    This function formats this into "Am7 D7 GM7 CM7 Bm7b5 E7 Am7 Dm7/G7". 
+    Gets rid of the | marks, and connects the chords within the same bar with /s.
+    '''
+    bars = chord_symbols_raw.split(" | ")
+    for i in range(len(bars)):
+        if " " in bars[i]:
+            bars[i] = bars[i].replace(" ", "/")
+    formatted_progression = " ".join(bars)
+    formatted_progression.replace('.', '').replace(',', '')
+    print("formatted: ")
+    print(formatted_progression)
+    return formatted_progression
+
+
+
+
+def main(chord_symbols, iter, mode=2):
+    
     for epoch in range(1, iter+1):  
         generate_midi_from_chord(chord_symbols, epoch, mode)
-
-
+        
+        
+        
+        
 if __name__ == "__main__":
-    # getting command line; example: python3 main.py "G Bm A Em" 10 0
     
-    chord_symbols = sys.argv[1]  # the first argument after the script name
-    iter = int(sys.argv[2]) 
-    mode = int(sys.argv[3])
+    # Load environment variables from .env file
+    load_dotenv()
+    
+    prompt = "Generate a jazz chord progression"
+    chord_symbols_raw = generate_chord_progression(prompt)
+    chord_symbols = format_symbols(chord_symbols_raw)
+    
+    iter = 1 # how many output files to generate (each will have variety)
+    mode = 0 # 0 is normal, 1 is with more bass
     main(chord_symbols, iter, mode)
