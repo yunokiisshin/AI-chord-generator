@@ -39,6 +39,7 @@ def generate_midi_from_chord(chord_symbols, mode):
             chords_in_bar = [bar] # if there's only one chord in the bar, still make it a list
 
         for chord_symbol in chords_in_bar:
+            print("  chord_symbol: ", chord_symbol)
             
             # Determine the root note and the type of chord
             root_note = chord_symbol[0]
@@ -49,7 +50,8 @@ def generate_midi_from_chord(chord_symbols, mode):
                 chord_type = chord_symbol[2:]   # add chord symbol
             else:
                 chord_type = chord_symbol[1:]
-        
+            print("    -  root_note: ", root_note)
+            print("    - chord_type: ", chord_type)
         # If the chord is the same as the last one, use the same notes
             if chord_symbol == chord_history['symbol']:
                 notes = chord_history['notes']

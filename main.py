@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 
 
-
 def generate_chord_progression(prompt):
     try:
         # Ensure API key is set in your environment variables
@@ -44,6 +43,10 @@ def format_symbols(chord_symbols_raw):
     This function formats this into "Am7 D7 GM7 CM7 Bm7b5 E7 Am7 Dm7/G7". 
     Gets rid of the | marks, and connects the chords within the same bar with /s.
     '''
+    print("raw: ")
+    print(" " + chord_symbols_raw)
+    if chord_symbols_raw[-1] == "|":
+        chord_symbols_raw = chord_symbols_raw[:-1]
     bars = chord_symbols_raw.split(" | ")
     for i in range(len(bars)):
         if " " in bars[i]:
@@ -51,7 +54,7 @@ def format_symbols(chord_symbols_raw):
     formatted_progression = " ".join(bars)
     formatted_progression.replace('.', '').replace(',', '')
     print("formatted: ")
-    print(formatted_progression)
+    print(" " + formatted_progression)
     return formatted_progression
 
 

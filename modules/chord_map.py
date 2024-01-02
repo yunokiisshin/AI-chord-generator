@@ -60,7 +60,7 @@ def prepare_note_dict(root_note, chord_type):
         fill_dict_value(note_dict, "fifth", fifth)
         fill_dict_value(note_dict, "seventh", seventh)
     
-    elif chord_type == 'M7': # major 7th
+    elif chord_type == 'M7' or 'Maj7': # major 7th
         third = shift(root, 4)
         fifth = shift(root, 7)
         seventh = shift(root, 11)
