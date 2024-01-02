@@ -55,18 +55,8 @@ def format_symbols(chord_symbols_raw):
     return formatted_progression
 
 
+def main():
 
-
-def main(chord_symbols, iter, mode=2):
-    
-    for epoch in range(1, iter+1):  
-        generate_midi_from_chord(chord_symbols, epoch, mode)
-        
-        
-        
-        
-if __name__ == "__main__":
-    
     # Load environment variables from .env file
     load_dotenv()
     
@@ -74,6 +64,18 @@ if __name__ == "__main__":
     chord_symbols_raw = generate_chord_progression(prompt)
     chord_symbols = format_symbols(chord_symbols_raw)
     
-    iter = 1 # how many output files to generate (each will have variety)
-    mode = 0 # 0 is normal, 1 is with more bass
-    main(chord_symbols, iter, mode)
+    mode = 1 # 0 is normal, 1 is with more bass
+    
+    music_stream, chord_name = generate_midi_from_chord(chord_symbols, mode)
+    filename = f"./result/{chord_name}.mid"  # Construct the filename using f-string
+    mf = midi.translate.streamToMidiFile(music_stream)
+    mf.open(filename, 'wb')
+    mf.write()
+    mf.close()
+        
+        
+        
+        
+if __name__ == "__main__":
+    main()
+

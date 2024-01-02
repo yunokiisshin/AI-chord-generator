@@ -3,11 +3,14 @@
 from music21 import *
 from modules.chord_map import *
 
+import mido
+from mido import MidiFile, MidiTrack, Message
+
 
 # stores the previous generation history so the next iteration is smooth
 chord_history = {'symbol': None, 'notes': []}
 
-def generate_midi_from_chord(chord_symbols, epoch, mode):
+def generate_midi_from_chord(chord_symbols, mode):
     # Create a music21 stream object to hold the notes and chords
     music_stream = stream.Stream()    
     
@@ -66,8 +69,7 @@ def generate_midi_from_chord(chord_symbols, epoch, mode):
             music_stream.append(c)
 
     # Once all the chords have been added to the stream, write the stream to a MIDI file
-    filename = f"./result/{chord_name}{epoch}.mid"  # Construct the filename using f-string
-    mf = midi.translate.streamToMidiFile(music_stream)
-    mf.open(filename, 'wb')
-    mf.write()
-    mf.close()
+    
+    return music_stream, chord_name
+    
+    
