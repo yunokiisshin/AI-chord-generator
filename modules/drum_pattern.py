@@ -16,24 +16,44 @@ def create_standard_drum_pattern(tempo=120):
     hi_hat = 42
     snare = 38
     
+    # define the delay effect for drunkbeat
+    delay = 100
+    
     # Create the drum pattern
-    for bar in range(8):
-        for beat in range(4):
+    for bar in range(4):
+        for beat in range(8): # 2-bar set
             # Add the kick drum note
             track.append(Message('note_on', note=kick, velocity=64, time=0))
             track.append(Message('note_off', note=kick, velocity=64, time=480))
             
             # Add the hi-hat note
-            track.append(Message('note_on', note=hi_hat, velocity=64, time=0))
-            track.append(Message('note_off', note=hi_hat, velocity=64, time=480))
+            track.append(Message('note_on', note=hi_hat, velocity=64, time=delay))
+            track.append(Message('note_off', note=hi_hat, velocity=64, time=480-delay))
             
             # Add the snare drum note
             track.append(Message('note_on', note=snare, velocity=64, time=0))
             track.append(Message('note_off', note=snare, velocity=64, time=480))
             
             # Add the hi-hat note again
-            track.append(Message('note_on', note=hi_hat, velocity=64, time=0))
-            track.append(Message('note_off', note=hi_hat, velocity=64, time=480))
+            track.append(Message('note_on', note=hi_hat, velocity=64, time=delay))
+            track.append(Message('note_off', note=hi_hat, velocity=64, time=480-delay))
+    
+            
+            # Add the kick drum note
+            track.append(Message('note_on', note=kick, velocity=64, time=0))
+            track.append(Message('note_off', note=kick, velocity=64, time=480))
+            
+            # Add the hi-hat note
+            track.append(Message('note_on', note=kick, velocity=64, time=delay))
+            track.append(Message('note_off', note=kick, velocity=64, time=480-delay))
+            
+            # Add the snare drum note
+            track.append(Message('note_on', note=snare, velocity=64, time=0))
+            track.append(Message('note_off', note=snare, velocity=64, time=480))
+            
+            # Add the hi-hat note again
+            track.append(Message('note_on', note=hi_hat, velocity=64, time=delay))
+            track.append(Message('note_off', note=hi_hat, velocity=64, time=480-delay))
     
     # Save the MIDI file to the specified directory
     mid.save('./drum_pattern.mid')
