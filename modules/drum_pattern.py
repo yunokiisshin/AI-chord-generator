@@ -56,6 +56,8 @@ def create_standard_drum_pattern(tempo=120):
             track.append(Message('note_off', note=hi_hat, velocity=64, time=480-delay))
     
     # Save the MIDI file to the specified directory
-    mid.save('./drum_pattern.mid')
+    filename = "./drum_pattern.mid"
+    mid.save(filename)
+    return filename
     
-create_standard_drum_pattern()
+# create_standard_drum_pattern()

@@ -75,6 +75,9 @@ def main():
     mf.open(filename, 'wb')
     mf.write()
     mf.close()
+    
+    drum_pattern = drum_pattern()
+    merge_midi_files(drum_pattern, filename, 'merged_midi.mid')
         
         
         

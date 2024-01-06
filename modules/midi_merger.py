@@ -19,4 +19,4 @@ def merge_midi_files(file1, file2, output_file):
     merged_midi.save(output_file)
 
 # Example usage
-merge_midi_files('midi_file1.mid', 'midi_file2.mid', 'merged_midi.mid')
+# merge_midi_files('midi_file1.mid', 'midi_file2.mid', 'merged_midi.mid')
