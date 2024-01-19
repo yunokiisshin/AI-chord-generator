@@ -10,26 +10,6 @@ const circles = [];
 const colors = ['231,173,255','229,167,237','227,161,219','225,155,201','223,149,183','221,143,165','219,137,147','217,131,129','215,125,111','213,119,93','211,113,75'];
 // const colors = ['231,173,255', '219,161,243', '207,149,231', '195,137,219', '183,125,207', '171,113,195', '159,101,183', '147,89,171', '135,77,159', '123,65,147', '111,53,135'];
 
-const hexToRGB = hex => {
-    let alpha = false,
-      h = hex.slice(hex.startsWith('#') ? 1 : 0);
-    if (h.length === 3) h = [...h].map(x => x + x).join('');
-    else if (h.length === 8) alpha = true;
-    h = parseInt(h, 16);
-    return (
-      'rgb' +
-      (alpha ? 'a' : '') +
-      '(' +
-      (h >>> (alpha ? 24 : 16)) +
-      ', ' +
-      ((h & (alpha ? 0x00ff0000 : 0x00ff00)) >>> (alpha ? 16 : 8)) +
-      ', ' +
-      ((h & (alpha ? 0x0000ff00 : 0x0000ff)) >>> (alpha ? 8 : 0)) +
-      (alpha ? `, ${h & 0x000000ff}` : '') +
-      ')'
-    );
-  };
-  
 
 // Create circle objects
 for (let i = 0; i < 11; i++) {
@@ -55,7 +35,6 @@ for (let i = 0; i < 11; i++) {
 // Function to draw the circles
 function drawCircles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-
     // Draw ripple if active
     for (let i = 0; i < circles.length; i++) {
         const circle = circles[i];
@@ -99,6 +78,9 @@ function updateCirclesWhenWindowChangesSize() {
         
     }
 }
+
+
+
 
 
 // Function to play the assigned WAV file
@@ -311,14 +293,25 @@ document.addEventListener('keyup', function(event) {
 });
 
 window.addEventListener('resize', function() {
-    updateCirclesWhenWindowChangesSize();
-    // change all the circles' radius to the ratio of the new canvas size to the old canvas size
+    const oldWidth = canvas.width;
+    const oldHeight = canvas.height;
+
+    // Update canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Update circle positions and sizes without affecting ripple states
     for (let i = 0; i < circles.length; i++) {
         const circle = circles[i];
-        circle.radius = circle.radius * canvas.width / circle.x;
-        circle.x = (i + 1) * canvas.width / 12;
-        circle.y = canvas.height / 2 + (Math.PI * 2) * (-30) * Math.sin(i * Math.PI / 5);
+        // Scale the position and radius relative to the new canvas size
+        circle.x = circle.x * (canvas.width / oldWidth);
+        circle.y = circle.y * (canvas.height / oldHeight);
+        circle.radius = circle.radius * (canvas.width / oldWidth);
+        // Do not reset ripple properties here
     }
+
+    // Redraw circles
+    drawCircles();
 });
 
 

@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Interactive Canvas Circle</title>
+    <title>Overtone.</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="images/icon.png">
 </head>
 <body>
     <canvas id="myCanvas"></canvas>
     <div class="title">Overtone.</div>
-    <div class="subtitle">Find and press keys to play.</div>
+    <div class="subtitle" id="subtitle">Find and press keys to play.</div>
+   
+    <label class="label">
+        <div class="toggle">
+          <input onclick="switchTextAndColor()" class="toggle-state" type="checkbox" name="check" value="check" />
+          <div class="indicator"></div>
+        </div>
+      </label>
+      
+ 
     <script src="script.js"></script>
+    <script>
+        function switchTextAndColor() {
+            var subtitle = document.getElementById("subtitle");
+            if (subtitle.innerHTML === "Find and press keys to play.") {
+                subtitle.innerHTML = "Press Space to play.";
+            } else {
+                subtitle.innerHTML = "Find and press keys to play.";
+            }
+            var element = document.body;
+            element.classList.toggle("second-mode");
+        }
+
+
+    </script>
 </body>
 </html>
